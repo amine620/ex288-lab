@@ -1,0 +1,154 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: nodejs-postgres-template
+  namespace: openshift                    # Templates are cluster-scoped if in openshift ns
+  annotations:
+    description: "Deploy a standard microservice with DB"
+    tags: "nodejs,database,postgresql"
+    iconClass: icon-openjdk
+    openshift.io/display-name: "My Microservice"
+    openshift.io/provider-display-name: "My Company"
+    openshift.io/documentation-url: "https://docs.mycompany.com/templates"
+    openshift.io/long-description: >
+      This template creates nodejs app and postgresql stack including
+  labels:
+    app: myapp
+    template: nodejs-postgres-template
+
+# ─── PARAMETERS: What the user fills in ───
+parameters:
+  - name: APP_NAME
+    displayName: "Application Name"
+    description: "The name for the application."
+    value: myapp                                   # Default value
+
+  - name: GIT_REPO
+    displayName: "repository"
+    description: "The git repo."
+    required: true
+
+
+  - name: DB_PASSWORD
+    displayName: "Database Password"
+    description: "Password for database user."
+    from: "[a-zA-Z0-9]{16}"                       # Auto-generate if not provided
+    generate: expression                           # Randomly generated
+    required: true
+                        
+
+  - name: NAMESPACE
+    displayName: "namespace"
+    description: "The name for the namespace"
+    value: myapp   
+    
+  - name: REPLICAS
+    displayName: "namespace"
+    description: "replicas"
+    value: "1"                                 
+
+
+# ─── OBJECTS: The resources to create ───
+objects:
+ # 3. Deployment
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ${APP_NAME}
+      annotations:
+        image.openshift.io/triggers: >
+          [{"from":{"kind":"ImageStreamTag","name":"${APP_NAME}:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"${APP_NAME}\")].image"}]
+    spec:
+      replicas: ${{REPLICAS}}             # Note: ${{ }} for numeric values
+      selector:
+        matchLabels:
+          app: ${APP_NAME}
+      template:
+        metadata:
+          labels:
+            app: ${APP_NAME}
+        spec:
+          containers:
+            - name: ${APP_NAME}
+              image: ' '
+              ports:
+                - containerPort: 8080
+              
+
+  # 4. Service
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      selector:
+        app: ${APP_NAME}
+      ports:
+        - port: 8080
+          targetPort: 8080
+
+
+   # 5. Route
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      to:
+        kind: Service
+        name: ${APP_NAME}
+      port:
+        targetPort: 8080
+
+
+    # 6. Secret for DB credentials
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: ${APP_NAME}-db-creds
+      labels:
+        app: ${APP_NAME}
+    type: Opaque
+    stringData:                            # StringData is plaintext, gets auto-encoded
+      # username: ${DATABASE_USER}
+      password: ${DB_PASSWORD}
+      # database: ${DATABASE_NAME}        
+
+  # 1. ImageStream — where the built image is stored
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+
+  # 2. BuildConfig — builds the app from Git using S2I
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      source:
+        type: Git
+        git:
+          uri: ${GIT_REPO}
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            namespace: openshift
+            name: nodejs:latest
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APP_NAME}:latest
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange

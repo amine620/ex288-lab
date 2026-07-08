@@ -1,0 +1,62 @@
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: false
+allowPrivilegedContainer: false
+allowedCapabilities:
+- NET_BIND_SERVICE
+apiVersion: security.openshift.io/v1
+defaultAddCapabilities: null
+fsGroup:
+  type: MustRunAs
+groups: []
+kind: SecurityContextConstraints
+metadata:
+  annotations:
+    include.release.openshift.io/ibm-cloud-managed: "true"
+    include.release.openshift.io/self-managed-high-availability: "true"
+    include.release.openshift.io/single-node-developer: "true"
+    kubernetes.io/description: restricted-v2 denies access to all host features and
+      requires pods to be run with a UID, and SELinux context that are allocated to
+      the namespace. This is the most restrictive SCC and it is used by default for
+      authenticated users. On top of the legacy 'restricted' SCC, it also requires
+      to drop ALL capabilities and does not allow privilege escalation binaries. It
+      will also default the seccomp profile to runtime/default if unset, otherwise
+      this seccomp profile is required.
+  creationTimestamp: "2026-05-13T16:00:24Z"
+  generation: 1
+  name: restricted-v2
+  ownerReferences:
+  - apiVersion: config.openshift.io/v1
+    controller: true
+    kind: ClusterVersion
+    name: version
+    uid: 349ec425-1b57-4979-94a7-8eae9694d72f
+  resourceVersion: "2031"
+  uid: fb7d8b53-b586-449b-8ec8-391121796d92
+priority: null
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- ALL
+runAsUser:
+  type: MustRunAsRange
+seLinuxContext:
+  type: MustRunAs
+seccompProfiles:
+- runtime/default
+supplementalGroups:
+  type: RunAsAny
+userNamespaceLevel: AllowHostLevel
+users: []
+volumes:
+- configMap
+- csi
+- downwardAPI
+- emptyDir
+- ephemeral
+- image
+- persistentVolumeClaim
+- projected
+- secret

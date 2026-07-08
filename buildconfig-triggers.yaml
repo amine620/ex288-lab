@@ -1,0 +1,46 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: app-with-triggers
+  namespace: team-alpha-triggers
+  labels:
+    app: app-with-triggers
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/openshift/nodejs-ex.git
+      ref: main
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: python-base:3.11
+  output:
+    to:
+      kind: ImageStreamTag
+      name: app-with-triggers:latest
+
+  # Pre-build hook
+  postCommit:
+    command: ["/bin/bash", "-c"]
+    args: ["echo 'POST-BUILD HOOK'; env | grep APP_VERSION"]
+
+  # Triggers: automatic build on ConfigChange and ImageChange
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange:
+        from:
+          kind: ImageStreamTag
+          name: python-base:3.11
+    - type: GitHub
+      github:
+        secret: "github-secret-key"
+
+  env:
+    - name: APP_VERSION
+      value: "1.0.0"
+    - name: BUILD_TIMESTAMP
+      value: "2026-07-02"

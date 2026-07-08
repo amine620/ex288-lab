@@ -1,0 +1,66 @@
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: nginx-scc
+  annotations:
+    kubernetes.io/description: "SCC for nginx containers that need specific UID 101 and writable cache directories"
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegedContainer: false
+allowPrivilegeEscalation: false
+
+# ─── THE KEY SETTING: Allow specific UID ───
+runAsUser:
+  type: MustRunAs
+  uid: 101                   # ← nginx's specific UID
+
+# ─── FILESYSTEM GROUP ───
+fsGroup:
+  type: MustRunAs
+  ranges:
+    - min: 101
+      max: 101               # ← nginx's specific GID
+
+# ─── SUPPLEMENTAL GROUPS ───
+supplementalGroups:
+  type: MustRunAs
+  ranges:
+    - min: 101
+      max: 101
+
+# ─── CAPABILITIES: Minimal set ───
+allowedCapabilities:
+  - NET_BIND_SERVICE        # ← Bind to port 80 (privileged port)
+  - CHOWN                   # ← Change file ownership for cache dirs
+  - SETGID                  # ← Set group ID
+  - SETUID                  # ← Set user ID (needed if nginx tries setuid internally)
+
+defaultAddCapabilities: []
+
+# ─── DROP ALL DANGEROUS CAPABILITIES ───
+requiredDropCapabilities:
+  - ALL                     # ← Drop everything except what's explicitly allowed
+
+# ─── SECONTEXT ───
+seLinuxContext:
+  type: MustRunAs           # Use container's default SELinux context
+
+# ─── VOLUMES ───
+volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - persistentVolumeClaim
+  - projected
+  - secret
+
+# ─── PRIORITY ───
+priority: 10                # Higher than restricted (which is 0)
+                            # But lower than anyuid (10 is fine)
+
+# ─── USERS/GROUPS (empty for now — bind later) ───
+users: []
+groups: []
