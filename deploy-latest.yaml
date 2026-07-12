@@ -1,0 +1,26 @@
+# deploy-latest.yaml — uses latest tag
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-latest
+  namespace: team-troubleshoot-builds
+
+  annotations:
+    image.openshift.io/triggers: >
+      [{"from":{"kind":"ImageStreamTag","name":"my-app:latest","namespace":"team-troubleshoot-builds"},
+        "fieldPath":"spec.template.spec.containers[?(@.name==\"app-latest\")].image"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-latest
+  template:
+    metadata:
+      labels:
+        app: app-latest
+    spec:
+      containers:
+        - name: app-latest
+          image: ' '
+          ports:
+            - containerPort: 8080

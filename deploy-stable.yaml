@@ -1,0 +1,26 @@
+# deploy-stable.yaml — uses stable tag
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-stable
+  namespace: team-troubleshoot-builds
+
+  annotations:
+    image.openshift.io/triggers: >
+      [{"from":{"kind":"ImageStreamTag","name":"my-app:stable","namespace":"team-troubleshoot-builds"},
+        "fieldPath":"spec.template.spec.containers[?(@.name==\"app-stable\")].image"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-stable
+  template:
+    metadata:
+      labels:
+        app: app-stable
+    spec:
+      containers:
+        - name: app-stable
+          image: ' '
+          ports:
+            - containerPort: 8080

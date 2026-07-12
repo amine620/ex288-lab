@@ -15,7 +15,7 @@ oc apply -f - <<EOF
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: python-base
+  name: nodejs
   namespace: team-troubleshoot-builds
 spec:
   lookupPolicy:
@@ -24,12 +24,12 @@ spec:
 apiVersion: image.openshift.io/v1
 kind: ImageStreamTag
 metadata:
-  name: python-base:3.11
+  name: nodejs:latest
   namespace: team-troubleshoot-builds
 spec:
   from:
     kind: DockerImage
-    name: registry.access.redhat.com/ubi9/python-311
+    name: registry.redhat.io/ubi8/nodejs-20-minimal
   importPolicy:
     scheduled: true
 EOF
@@ -233,7 +233,7 @@ spec:
     sourceStrategy:
       from:
         kind: ImageStreamTag
-        name: python-base:3.11
+        name: nodejs-base:latest
   output:
     to:
       kind: ImageStreamTag

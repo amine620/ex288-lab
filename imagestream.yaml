@@ -1,0 +1,32 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: myapp
+  namespace: team-troubleshoot-builds
+spec:
+  lookupPolicy:
+    local: false
+
+
+
+# Import newer nginx as tag "latest"
+oc import-image my-app:latest \
+  --from=docker.io/nginx:1.25 \
+  --confirm -n team-troubleshoot-builds
+
+# Import bitnami nginx as tag "openshift"
+oc import-image my-app:openshift \
+  --from=bitnami/nginx \
+  --confirm -n team-troubleshoot-builds
+
+
+  oc get istag -n team-troubleshoot-builds
+
+  # New version arrives — update latest tag
+oc import-image my-app:latest \
+  --from=docker.io/nginx:1.26 \
+  --confirm -n team-troubleshoot-builds
+
+  oc tag docker.io/nginx:1.26 my-app:latest -n team-troubleshoot-builds
+
+  oc get istag -n team-troubleshoot-builds

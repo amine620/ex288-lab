@@ -42,8 +42,8 @@
 - [x] 11 ConfigMaps — from-literal, from-file, mount as volume or env
 - [x] 12 Secrets — Opaque, base64 != encryption, RBAC as real protection
 - [x] 13 env vs envFrom — valueFrom, secretKeyRef, silent conflicts
-- [ ] 14 Volumes + PVCs — emptyDir vs PVC, RWO vs RWX
-- [ ] 15 Storage Patterns — ephemeral vs persistent, StatefulSets
+- [x] 14 Volumes + PVCs — emptyDir vs PVC, RWO vs RWX
+- [x] 15 Storage Patterns — ephemeral vs persistent, StatefulSets
 
 ---
 

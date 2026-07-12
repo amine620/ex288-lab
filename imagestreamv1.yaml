@@ -1,0 +1,121 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"image.openshift.io/v1","kind":"ImageStream","metadata":{"annotations":{},"name":"my-app","namespace":"team-troubleshoot-builds"}}
+    openshift.io/image.dockerRepositoryCheck: "2026-07-10T15:56:37Z"
+  creationTimestamp: "2026-07-10T15:07:42Z"
+  generation: 9
+  name: my-app
+  namespace: team-troubleshoot-builds
+  resourceVersion: "111048"
+  uid: 6b83890f-eac9-4c58-97ca-eecc7b56e68f
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations: null
+    from:
+      kind: ImageStreamImage
+      name: my-app@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    generation: 5
+    importPolicy:
+      importMode: Legacy
+    name: dev
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker.io/nginx:1.26
+    generation: 9
+    importPolicy:
+      importMode: Legacy
+    name: latest
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: bitnami/nginx
+    generation: 4
+    importPolicy:
+      importMode: Legacy
+    name: openshift
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: ImageStreamImage
+      name: my-app@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    generation: 7
+    importPolicy:
+      importMode: Legacy
+    name: prod
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker.io/nginx:1.24
+    generation: 2
+    importPolicy:
+      importMode: Legacy
+    name: stable
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: ImageStreamImage
+      name: my-app@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    generation: 6
+    importPolicy:
+      importMode: Legacy
+    name: staging
+    referencePolicy:
+      type: Source
+status:
+  dockerImageRepository: image-registry.openshift-image-registry.svc:5000/team-troubleshoot-builds/my-app
+  publicDockerImageRepository: default-route-openshift-image-registry.apps-crc.testing/team-troubleshoot-builds/my-app
+  tags:
+  - items:
+    - created: "2026-07-10T15:51:06Z"
+      dockerImageReference: docker.io/nginx@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+      generation: 5
+      image: sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    tag: dev
+  - items:
+    - created: "2026-07-10T15:56:37Z"
+      dockerImageReference: docker.io/nginx@sha256:c8042489f41ddaf05b7dfbe1e32d5227f94f1b002aca8e3b7b9c9d0cee6b0fed
+      generation: 9
+      image: sha256:c8042489f41ddaf05b7dfbe1e32d5227f94f1b002aca8e3b7b9c9d0cee6b0fed
+    - created: "2026-07-10T15:39:36Z"
+      dockerImageReference: docker.io/nginx@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+      generation: 3
+      image: sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    tag: latest
+  - items:
+    - created: "2026-07-10T15:39:37Z"
+      dockerImageReference: bitnami/nginx@sha256:f1f70b5424336924b76bf5eaabc1af7bf244298a47af7e50ee50ff88d1cb0f2f
+      generation: 4
+      image: sha256:f1f70b5424336924b76bf5eaabc1af7bf244298a47af7e50ee50ff88d1cb0f2f
+    tag: openshift
+  - items:
+    - created: "2026-07-10T15:52:04Z"
+      dockerImageReference: docker.io/nginx@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+      generation: 7
+      image: sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    tag: prod
+  - items:
+    - created: "2026-07-10T15:39:03Z"
+      dockerImageReference: docker.io/nginx@sha256:2e26275ed7a47e8e93f264d39a09ca4bc3f4058c904c75087e237f4ea883f2a1
+      generation: 2
+      image: sha256:2e26275ed7a47e8e93f264d39a09ca4bc3f4058c904c75087e237f4ea883f2a1
+    tag: stable
+  - items:
+    - created: "2026-07-10T15:51:53Z"
+      dockerImageReference: docker.io/nginx@sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+      generation: 6
+      image: sha256:e688fed0b0c7513a63364959e7d389c37ac8ecac7a6c6a31455eca2f5a71ab8b
+    tag: staging
