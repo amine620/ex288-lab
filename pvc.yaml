@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: myapp-data
-  namespace: scc-lab
+  name: app-data-pvc
+  namespace: team-storage-patterns
 spec:
   accessModes:
-    - ReadWriteOnce          # One pod can read/write at a time
+    - ReadWriteOnce  # ← Single pod can read/write
   resources:
     requests:
-      storage: 1Gi           # Request 1 GB
+      storage: 1Gi
+  # Optional: specify storage class
+  storageClassName:  null  # ← Use default storage class if not specified

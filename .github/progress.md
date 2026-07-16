@@ -49,7 +49,7 @@
 
 ## 🔵 Phase 4 — App Health & Resources
 
-- [ ] 16 Health Checks — Liveness + Readiness + Startup probes
+- [x] 16 Health Checks — Liveness + Readiness + Startup probes
 - [ ] 17 Resource Requests + Limits — CPU/memory, OOMKilled, throttling
 - [ ] 18 Quotas + LimitRanges — project-level enforcement
 

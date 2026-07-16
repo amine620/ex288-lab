@@ -1,26 +1,38 @@
-# deploy-stable.yaml — uses stable tag
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-stable
-  namespace: team-troubleshoot-builds
-
-  annotations:
-    image.openshift.io/triggers: >
-      [{"from":{"kind":"ImageStreamTag","name":"my-app:stable","namespace":"team-troubleshoot-builds"},
-        "fieldPath":"spec.template.spec.containers[?(@.name==\"app-stable\")].image"}]
+  name: my-app
+  namespace: team-storage-patterns 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-stable
+      app: my-app
   template:
     metadata:
       labels:
-        app: app-stable
+        app: my-app
     spec:
+      # TOLERATIONS ADDED HERE
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/worker
+        operator: Exists
+        effect: NoSchedule
       containers:
-        - name: app-stable
-          image: ' '
-          ports:
-            - containerPort: 8080
+      - name: app
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: app-storage
+          mountPath: /data
+      volumes:
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: app-data-pvc

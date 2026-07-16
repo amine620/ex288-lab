@@ -1,15 +1,3 @@
-Read .github/copilot-instructions.md
-
-Create the first OpenShift learning mission.
-
-Generate:
-
-labs/01-projects-and-namespaces/
-├── mission.md
-├── lab.md
-├── investigation.md
-├── solution.md
-└── notes.md
 
 Follow all repository instructions.
 
