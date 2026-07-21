@@ -1,0 +1,34 @@
+# probes.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slowapp
+  namespace: probes-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slowapp
+  template:
+    metadata:
+      labels:
+        app: slowapp
+    spec:
+      containers:
+        - name: slowapp
+          image: bitnami/nginx
+          ports:
+            - containerPort: 8080
+          args:
+          - /bin/sh
+          - -c
+          - touch /tmp/healthy
+         
+          livenessProbe:
+            exec:
+              command:
+              - cat 
+              - /tmp/healthy
+            initialDelaySeconds: 20
+            periodSeconds: 5
+         

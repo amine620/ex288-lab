@@ -1,0 +1,57 @@
+# probes.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slowapp-3
+  namespace: probes-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slowapp-3
+  template:
+    metadata:
+      labels:
+        app: slowapp-3
+    spec:
+      containers:
+        - name: slowapp-3
+          image: bitnami/nginx
+          ports:
+            - containerPort: 8080
+
+          # STARTUP PROBE — covers the slow 30s startup window
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+            failureThreshold: 30      # 30 × 1s = 30s max startup time
+            periodSeconds: 1
+            timeoutSeconds: 1
+
+          # LIVENESS PROBE — detects deadlock/hung process
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3        # 3 failures = restart
+            timeoutSeconds: 1
+
+          # READINESS PROBE — detects temporary unavailability
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 2        # 2 failures = remove from Service
+            timeoutSeconds: 1
+            initialDelaySeconds: 0
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"

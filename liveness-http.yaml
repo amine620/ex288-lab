@@ -1,0 +1,36 @@
+# probes.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slowapp-2
+  namespace: probes-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slowapp-2
+  template:
+    metadata:
+      labels:
+        app: slowapp-2
+    spec:
+      containers:
+        - name: slowapp-2
+          image: registry.k8s.io/e2e-test-images/agnhost:2.40
+          ports:
+            - containerPort: 8080
+          args:
+            - liveness
+          livenessProbe:
+            httpGet:
+              path: /tmp/healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /tmp/healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+         
