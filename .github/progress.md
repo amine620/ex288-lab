@@ -50,7 +50,7 @@
 ## 🔵 Phase 4 — App Health & Resources
 
 - [x] 16 Health Checks — Liveness + Readiness + Startup probes
-- [ ] 17 Resource Requests + Limits — CPU/memory, OOMKilled, throttling
+- [x] 17 Resource Requests + Limits — CPU/memory, OOMKilled, throttling
 - [ ] 18 Quotas + LimitRanges — project-level enforcement
 
 ---
@@ -217,4 +217,4 @@
 ---
 
 > _"Don't count the days. Make the days count."_
-> Next: **Topic 16 — Health Checks + Probes** → say `Next Challenge`
+> Next: **Topic 18 — Quotas + LimitRanges** → say `Next Challenge`
